@@ -2,7 +2,7 @@
 Test custom Django management commamnds
 """
 from unittest.mock import patch
-from psycopg2 import OperationalError as Psycopg2Error
+from psycopg2 import OperationalError as Psycopg2OpError
 
 from django.core.management import call_command
 from django.db.utils import OperationalError
@@ -14,10 +14,10 @@ class CommandTests(SimpleTestCase):
 
     def test_wait_for_db_ready(self, patched_check):
         """Test waiting for database if database ready"""
-        patched_check.return_value=True
+        patched_check.return_value = True
 
         call_command('wait_for_db')
-        patched_check.assert_called_once_with(database=['default'])
+        patched_check.assert_called_once_with(databases=['default'])
 
     @patch('time.sleep')
 
@@ -29,4 +29,4 @@ class CommandTests(SimpleTestCase):
         call_command('wait_for_db')
 
         self.assertEqual(patched_check.call_count, 6)
-        patched_check.assert_called_with(database=['default'])
+        patched_check.assert_called_with(databases=['default'])
