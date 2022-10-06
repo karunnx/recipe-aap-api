@@ -77,7 +77,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Create a new recipe"""
         serializer.save(user=self.request.user)
 
-    @action(methods=['POST'],detail=True, url_path='upload_image')
+    @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
         """upload an image to recipe"""
         recipe = self.get_object()
@@ -87,13 +87,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         
-        return Response(serializer.erros, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 @extend_schema_view(
     list=extend_schema(
         parameters=[
             OpenApiParameter(
                 'assigned_only',
-                OpenApiTypes.INT, enum=[0,1],
+                OpenApiTypes.INT, enum=[0, 1],
                 description='Filter by items assigned to recipes.',
                 )
         ]
@@ -114,7 +114,7 @@ class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
         )
         queryset = self.queryset
         if assigned_only:
-            queryset = queryset.filter(recipe_isnull=False)
+            queryset = queryset.filter(recipe__isnull=False)
 
         return queryset.filter(user=self.request.user).order_by('-name').distinct()
 
